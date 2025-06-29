@@ -24,7 +24,12 @@ export const CreateUser = async (req,res) =>{
 export const userLogin = async (req,res) =>{
       try {
          const {email, password}=req.body;
+         const userExist= await User.findOne({email})
 
+         if(!userExist){
+          return res.status(400).json({message:"User do not exists, please register first."})
+         }
+         
          if(!email || !password){
              return res.status(400).json({message:"Something is missing"})
          }

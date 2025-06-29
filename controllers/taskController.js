@@ -32,14 +32,14 @@ export const getAllTasks = async(req,res) =>{
 }
 
 export const updateTaskusingId= async (req,res) =>{
-     const {taskId} = req.params;
+     const {_id} = req.params;
      const {title, description, status}= req.body;
      try {
-           let task = await Task.find({taskId});
+           let task = await Task.findById(_id);
            if(!task){
               return res.status(404).json({message:"Task not found"})
            }
-           task = await Task.findOneAndUpdate({taskId},{title, description, status}, {new:true});
+           task = await Task.findByIdAndUpdate(_id,{title, description, status}, {new:true});
            return res.status(200).json({message:"Task updated successfully",task});
      } catch (error) {
                  return res.status(500).json({message:"Internal server error"});
@@ -48,13 +48,13 @@ export const updateTaskusingId= async (req,res) =>{
 }
 
 export const deleteTaskById = async(req,res) =>{
-     const {taskId} = req.params;
+     const {_id} = req.params;
      try {
-            let task = await Task.findOne({taskId});
+            let task = await Task.findById(_id);
            if(!task){
               return res.status(404).json({message:"Task not found"})
            }
-          await Task.findOneAndDelete({taskId})
+          await Task.findByIdAndDelete(_id)
            return res.status(200).json({message:"task deleted successfully"});
      } catch (error) {
          return res.status(500).json({message:"Internal server error"});
@@ -79,17 +79,3 @@ export const filterTask = async (req,res)=>{
         }
 } 
 
-
-export const getTaskbyId = async(req,res)=>{
-     const {taskId}= req.params;
-     try {
-        const task = await Task.find({taskId});
-        if(task){
-           return res.status(200).json({message:"Task fetched successfully", task});
-        }else{
-          return res.status(404).json({message:"Task not found"});
-        }
-     } catch (error) {
-        return res.status(500).json({message:"Internal server error"});
-     }
-}
